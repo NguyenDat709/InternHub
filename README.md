@@ -1,39 +1,68 @@
-**Welcome to your Base44 project** 
+# InternHub Vietnam
 
-**About**
+Frontend application built with React, Vite, Tailwind CSS, and Base44 SDK.
 
-View and Edit  your app on [Base44.com](http://Base44.com) 
+## Giới thiệu
 
-This project contains everything you need to run your app locally.
+`InternHub Vietnam` là một nền tảng đa portal cho:
+- Sinh viên/ứng viên tìm việc, tìm mentor và tham gia challenge
+- Mentor quản lý học viên, buổi học và thu nhập
+- Doanh nghiệp quản lý tuyển dụng, ứng viên, challenge và phân tích
 
-**Edit the code in your local development environment**
+Ứng dụng được thiết kế để chạy trên Base44 và tích hợp với hệ thống auth của Base44.
 
-Any change pushed to the repo will also be reflected in the Base44 Builder.
+## Tính năng chính
 
-**Prerequisites:** 
+- Layout student với trang chủ, việc làm, mentor, thử thách, tin nhắn, thông báo, hồ sơ
+- Portal Mentor với dashboard, học viên, lịch, thu nhập
+- Portal Doanh nghiệp với dashboard, tin tuyển dụng, ứng viên, challenge, analytics
+- Hệ thống auth Base44 và kiểm tra trạng thái user
+- UI responsive với sidebar mobile và header cố định
 
-1. Clone the repository using the project's Git URL 
-2. Navigate to the project directory
-3. Install dependencies: `npm install`
-4. Create an `.env.local` file and set the right environment variables
+## Cài đặt nhanh
 
+```bash
+npm install
+npm run dev
 ```
+
+Mở trình duyệt theo địa chỉ local do Vite cung cấp.
+
+## Biến môi trường
+
+Tạo file `.env.local` với giá trị:
+
+```env
 VITE_BASE44_APP_ID=your_app_id
 VITE_BASE44_APP_BASE_URL=your_backend_url
-
-e.g.
-VITE_BASE44_APP_ID=cbef744a8545c389ef439ea6
-VITE_BASE44_APP_BASE_URL=https://my-to-do-list-81bfaad7.base44.app
+VITE_BASE44_FUNCTIONS_VERSION=your_functions_version
 ```
 
-Run the app: `npm run dev`
+## Các lệnh thường dùng
 
-**Publish your changes**
+- `npm run dev` - khởi động dev server
+- `npm run build` - build production
+- `npm run preview` - chạy preview bản build
+- `npm run lint` - kiểm tra eslint
+- `npm run lint:fix` - sửa lỗi eslint tự động
+- `npm run typecheck` - kiểm tra type bằng `jsconfig.json`
 
-Open [Base44.com](http://Base44.com) and click on Publish.
+## Cấu trúc chính
 
-**Docs & Support**
+- `src/App.jsx` - cấu hình route và layout
+- `src/main.jsx` - render app vào DOM
+- `src/components/layout/` - `AppLayout`, `MentorLayout`, `CompanyLayout`
+- `src/pages/` - từng trang ứng dụng
+- `src/api/base44Client.js` - khởi tạo Base44 client
+- `src/lib/AuthContext.jsx` - auth provider và trạng thái auth
+- `src/lib/app-params.js` - lấy param từ URL hoặc env
+- `src/components/ui/` - component UI chung
 
-Documentation: [https://docs.base44.com/Integrations/Using-GitHub](https://docs.base44.com/Integrations/Using-GitHub)
+## Tài liệu chi tiết
 
-Support: [https://app.base44.com/support](https://app.base44.com/support)
+Xem thêm hướng dẫn và kiến trúc dự án tại `DOCUMENTATION.md`.
+
+## Links
+
+- Base44 docs: https://docs.base44.com/Integrations/Using-GitHub
+- Base44 support: https://app.base44.com/support
