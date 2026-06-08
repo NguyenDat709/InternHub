@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Sparkles, GraduationCap, ChevronRight } from 'lucide-react';
 import JobCard from './JobCard';
 import MentorCard from './MentorCard';
-
+import { feedApi } from '@/api/feedApi';
+import { useQuery } from '@tanstack/react-query';
 const jobs = [
   {
     title: 'Flutter Developer Intern',
@@ -34,7 +35,6 @@ const jobs = [
     skills: ['Python', 'SQL', 'Tableau'],
   },
 ];
-
 const mentors = [
   {
     name: 'Anh Trần Minh Đức',
@@ -64,8 +64,8 @@ const mentors = [
     online: false,
   },
 ];
-
 export default function OpportunitySidebar() {
+   
   return (
     <div className="space-y-4">
       {/* Hot Jobs */}

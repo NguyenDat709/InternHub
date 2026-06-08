@@ -1,5 +1,7 @@
 // @ts-nocheck
 import React, { useState } from 'react';
+import {useMutation,useQueryClient} from "@tanstack/react-query"
+import {feedApi} from "@/api/feedApi"
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -8,14 +10,30 @@ import { Heart, MessageCircle, Share2, Bookmark, ExternalLink } from 'lucide-rea
 
 export default function PostCard({ post }) {
   const [liked, setLiked] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [likeCount, setLikeCount] = useState(post.likes);
-
-  const handleLike = () => {
-    setLiked(!liked);
-    setLikeCount(prev => liked ? prev - 1 : prev + 1);
+ // const [saved, setSaved] = useState(false);
+  const queryClient = useQueryClient();
+  const handleLike = async() => {
+    // setLiked(!liked);
+    // setLikeCount(prev => liked ? prev - 1 : prev + 1);
+    await feedApi.likePost(post.id);
+    queryClient.invalidateQueries({ queryKey: ['feed'] });
   };
-
+  const handleSave=async()=>{
+    try{
+      await feedApi.savePost(post.id);
+      queryClient.invalidateQueries({ queryKey: ['feed'] });
+    }catch(error){
+      console.error("Error saving post",error);
+    }
+  }
+  const handleShare=async()=>{
+    try{
+      await feedApi.sharePost(post.id);
+      queryClient.invalidateQueries({ queryKey: ['feed'] });
+    }catch(error){
+      console.error("Error sharing post",error);
+    }
+  }
   return (
     <Card className="overflow-hidden hover:shadow-md transition-shadow duration-300">
       {/* Author */}
@@ -86,23 +104,28 @@ export default function PostCard({ post }) {
             onClick={handleLike}
           >
             <Heart className={`w-4 h-4 ${liked ? 'fill-current' : ''}`} />
-            {likeCount}
+            {post.likes}
           </Button>
           <Button variant="ghost" size="sm" className="rounded-full gap-1.5 text-xs">
             <MessageCircle className="w-4 h-4" />
             {post.comments}
           </Button>
-          <Button variant="ghost" size="sm" className="rounded-full gap-1.5 text-xs">
+          <Button variant="ghost" 
+            size="sm" 
+            className="rounded-full gap-1.5 text-xs"
+            onClick={handleShare}
+          >
             <Share2 className="w-4 h-4" />
+            {post.shares || 0}
           </Button>
         </div>
         <Button
           variant="ghost"
           size="icon"
-          className={`rounded-full ${saved ? 'text-primary' : ''}`}
-          onClick={() => setSaved(!saved)}
+          className={`rounded-full ${post.isSaved ? 'text-primary' : ''}`}
+          onClick={handleSave}
         >
-          <Bookmark className={`w-4 h-4 ${saved ? 'fill-current' : ''}`} />
+          <Bookmark className={`w-4 h-4 ${post.isSaved ? 'fill-current' : ''}`} />
         </Button>
       </div>
     </Card>

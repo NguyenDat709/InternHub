@@ -5,65 +5,21 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Star, MessageSquare, Calendar, CheckCircle2, Search, Filter, Zap, Users, Clock } from 'lucide-react';
-
+import { useQuery } from '@tanstack/react-query';
+import {feedApi} from '@/api/feedApi';
 const specialties = ['Tất cả', 'Mobile Dev', 'Web Dev', 'Data Science', 'UI/UX', 'Product', 'DevOps'];
-
-const mentors = [
-  {
-    id: 1, name: 'Anh Trần Minh Đức', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=160&h=160&fit=crop&crop=face',
-    role: 'Senior Mobile Developer', company: 'Momo', rating: 4.9, reviews: 47,
-    online: true, specialties: ['Flutter', 'React Native', 'iOS/Swift'],
-    sessions: 156, students: 48, responseTime: '< 1 giờ',
-    bio: 'Hơn 6 năm kinh nghiệm phát triển ứng dụng mobile. Đã mentor thành công 48 sinh viên vào các công ty top tại Việt Nam.',
-    price: 'Miễn phí', verified: true,
-  },
-  {
-    id: 2, name: 'Chị Nguyễn Thanh Hà', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=160&h=160&fit=crop&crop=face',
-    role: 'Product Manager', company: 'Tiki', rating: 4.8, reviews: 32,
-    online: true, specialties: ['Product Strategy', 'Agile', 'User Research'],
-    sessions: 98, students: 35, responseTime: '< 2 giờ',
-    bio: 'PM với 5 năm kinh nghiệm tại các startup và công ty lớn. Chuyên gia về product-market fit và growth hacking.',
-    price: '200k/giờ', verified: true,
-  },
-  {
-    id: 3, name: 'Anh Phạm Hoàng Long', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=160&h=160&fit=crop&crop=face',
-    role: 'Tech Lead', company: 'VNPay', rating: 4.7, reviews: 28,
-    online: false, specialties: ['Node.js', 'Microservices', 'AWS'],
-    sessions: 74, students: 22, responseTime: '< 4 giờ',
-    bio: 'Kiến trúc hệ thống backend quy mô lớn, xử lý hàng triệu giao dịch mỗi ngày tại VNPay.',
-    price: '300k/giờ', verified: true,
-  },
-  {
-    id: 4, name: 'Chị Lê Thảo Nhi', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=160&h=160&fit=crop&crop=face',
-    role: 'UX Designer', company: 'Grab Vietnam', rating: 4.6, reviews: 19,
-    online: true, specialties: ['Figma', 'UX Research', 'Design System'],
-    sessions: 52, students: 17, responseTime: '< 3 giờ',
-    bio: 'Designer với đam mê tạo ra trải nghiệm người dùng đơn giản nhưng hiệu quả cho hàng triệu người dùng.',
-    price: '150k/giờ', verified: false,
-  },
-  {
-    id: 5, name: 'Anh Võ Đình Khải', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=160&h=160&fit=crop&crop=face',
-    role: 'Data Scientist', company: 'VNG Corporation', rating: 4.9, reviews: 41,
-    online: false, specialties: ['Python', 'Machine Learning', 'TensorFlow'],
-    sessions: 128, students: 40, responseTime: '< 2 giờ',
-    bio: 'Chuyên gia ML với kinh nghiệm xây dựng recommendation engine và NLP cho hàng chục triệu người dùng.',
-    price: '350k/giờ', verified: true,
-  },
-  {
-    id: 6, name: 'Chị Bùi Thu Hương', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=160&h=160&fit=crop&crop=face',
-    role: 'Frontend Lead', company: 'Shopee Vietnam', rating: 4.8, reviews: 36,
-    online: true, specialties: ['React', 'Vue.js', 'Performance'],
-    sessions: 89, students: 29, responseTime: '< 1 giờ',
-    bio: 'Chuyên sâu về React performance optimization và micro-frontend architecture cho hệ thống e-commerce.',
-    price: '250k/giờ', verified: true,
-  },
-];
 
 export default function Mentors() {
   const [activeSpec, setActiveSpec] = useState('Tất cả');
-  const [selectedMentor, setSelectedMentor] = useState(mentors[0]);
+  const [selectedMentor, setSelectedMentor] = useState();
   const [booked, setBooked] = useState([]);
-
+  const{
+    data:mentorsData=[],
+    isLoading,
+  }=useQuery({
+    queryKey:['mentors'],
+    queryFn:feedApi.getRecommendedMentors,
+  })
   return (
     <div className="flex gap-6">
       {/* Mentor List */}
@@ -105,7 +61,7 @@ export default function Mentors() {
         </Card>
 
         <div className="space-y-3">
-          {mentors.map(mentor => (
+          {mentorsData.map(mentor => (
             <Card key={mentor.id} onClick={() => setSelectedMentor(mentor)}
               className={`p-4 cursor-pointer transition-all duration-200 hover:border-primary/40
                 ${selectedMentor?.id === mentor.id ? 'border-primary shadow-md shadow-primary/10' : ''}`}>

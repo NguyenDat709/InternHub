@@ -5,60 +5,19 @@ import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { MapPin, Clock, Sparkles, Search, Filter, Bookmark, ChevronRight, Building2, Users, DollarSign, Star } from 'lucide-react';
-
+import{ useQuery } from '@tanstack/react-query';
+import { feedApi } from '@/api/feedApi';
 const categories = ['Tất cả', 'Lập trình', 'Design', 'Data', 'Marketing', 'Quản trị'];
-
-const jobs = [
-  {
-    id: 1, title: 'Flutter Developer Intern', company: 'FPT Software', logo: 'https://images.unsplash.com/photo-1614680376593-902f74cf0d41?w=80&h=80&fit=crop',
-    location: 'Hồ Chí Minh', type: 'Part-time', salary: '5-8 triệu', posted: '2 ngày trước',
-    matchScore: 95, skills: ['Flutter', 'Dart', 'REST API', 'Firebase'], hot: true,
-    description: 'Tham gia đội ngũ mobile tại FPT Software, phát triển ứng dụng cho khách hàng doanh nghiệp lớn.',
-    openings: 3, applicants: 48, deadline: '30/06/2025',
-  },
-  {
-    id: 2, title: 'Frontend Engineer Intern', company: 'Shopee Vietnam', logo: 'https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=80&h=80&fit=crop',
-    location: 'Hồ Chí Minh', type: 'Full-time', salary: '8-12 triệu', posted: '1 ngày trước',
-    matchScore: 88, skills: ['React', 'TypeScript', 'TailwindCSS', 'GraphQL'],
-    description: 'Xây dựng giao diện người dùng cho hàng triệu khách hàng Shopee Việt Nam.',
-    openings: 5, applicants: 120, deadline: '25/06/2025',
-  },
-  {
-    id: 3, title: 'Data Analyst Intern', company: 'VNG Corporation', logo: 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=80&h=80&fit=crop',
-    location: 'Hà Nội', type: 'Part-time', salary: '4-6 triệu', posted: '3 ngày trước',
-    matchScore: 72, skills: ['Python', 'SQL', 'Tableau', 'Excel'],
-    description: 'Phân tích dữ liệu game và đề xuất chiến lược phát triển sản phẩm.',
-    openings: 2, applicants: 67, deadline: '20/06/2025',
-  },
-  {
-    id: 4, title: 'UI/UX Design Intern', company: 'Momo', logo: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=80&h=80&fit=crop',
-    location: 'Hồ Chí Minh', type: 'Full-time', salary: '6-9 triệu', posted: '5 ngày trước',
-    matchScore: 65, skills: ['Figma', 'Prototyping', 'User Research', 'Adobe XD'],
-    description: 'Thiết kế trải nghiệm người dùng cho ứng dụng ví điện tử hàng đầu Việt Nam.',
-    openings: 1, applicants: 89, deadline: '15/06/2025',
-  },
-  {
-    id: 5, title: 'Backend Developer Intern', company: 'Tiki', logo: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=80&h=80&fit=crop',
-    location: 'Hồ Chí Minh', type: 'Full-time', salary: '7-10 triệu', posted: '1 tuần trước',
-    matchScore: 80, skills: ['Node.js', 'MongoDB', 'Docker', 'AWS'],
-    description: 'Phát triển hệ thống backend cho nền tảng thương mại điện tử hàng đầu.',
-    openings: 4, applicants: 95, deadline: '10/07/2025',
-  },
-  {
-    id: 6, title: 'Marketing Intern', company: 'Grab Vietnam', logo: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=80&h=80&fit=crop',
-    location: 'Hà Nội', type: 'Part-time', salary: '3-5 triệu', posted: '4 ngày trước',
-    matchScore: 55, skills: ['Social Media', 'Content', 'SEO', 'Analytics'],
-    description: 'Hỗ trợ chiến dịch marketing digital cho các dịch vụ của Grab tại Việt Nam.',
-    openings: 2, applicants: 143, deadline: '05/06/2025',
-  },
-];
 
 export default function Jobs() {
   const [activeCategory, setActiveCategory] = useState('Tất cả');
   const [savedJobs, setSavedJobs] = useState([]);
-  const [selectedJob, setSelectedJob] = useState(jobs[0]);
+  const [selectedJob, setSelectedJob] = useState(null);
   const [applied, setApplied] = useState([]);
-
+  const {
+      data: jobs=[],
+      isLoading: isJobLoading,
+  }=useQuery({queryKey:['jobs'],queryFn:feedApi.getRecommendedJobs});
   const toggleSave = (id) => setSavedJobs(prev => prev.includes(id) ? prev.filter(j => j !== id) : [...prev, id]);
   const handleApply = (id) => setApplied(prev => [...prev, id]);
 

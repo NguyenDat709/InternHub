@@ -6,70 +6,28 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
 import { Clock, Trophy, Users, Zap, ChevronRight, Star, CheckCircle2, Lock, Flame } from 'lucide-react';
-
+import { useQuery } from '@tanstack/react-query';
+import {feedApi} from "@/api/feedApi"
 const filters = ['Tất cả', 'Đang diễn ra', 'Sắp diễn ra', 'Đã tham gia'];
 
-const challenges = [
-  {
-    id: 1, company: 'FPT Software', logo: 'https://images.unsplash.com/photo-1614680376593-902f74cf0d41?w=80&h=80&fit=crop',
-    title: 'Code Challenge: Xây dựng API RESTful trong 24h',
-    description: 'Thiết kế và triển khai một API quản lý thư viện sách với Node.js/Express. Bao gồm authentication, CRUD, và pagination.',
-    skills: ['Node.js', 'Express', 'MongoDB', 'JWT'],
-    timeLeft: '18h 32m', participants: 156, spotsLeft: 5,
-    status: 'active', reward: 'Golden Ticket - Phỏng vấn thẳng', difficulty: 'Trung bình',
-    points: 500, joined: false, hot: true,
-  },
-  {
-    id: 2, company: 'Shopee Vietnam', logo: 'https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=80&h=80&fit=crop',
-    title: 'UI Challenge: Thiết kế trang checkout tối ưu',
-    description: 'Thiết kế lại trang checkout của Shopee để tăng tỷ lệ chuyển đổi. Nộp file Figma với prototype.',
-    skills: ['Figma', 'UX Design', 'Prototyping'],
-    timeLeft: '2 ngày', participants: 89, spotsLeft: 12,
-    status: 'active', reward: '2 triệu VNĐ + Fast-track Interview', difficulty: 'Dễ',
-    points: 300, joined: true, hot: false,
-  },
-  {
-    id: 3, company: 'Momo', logo: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=80&h=80&fit=crop',
-    title: 'Data Challenge: Phân tích hành vi người dùng ví điện tử',
-    description: 'Phân tích dataset giao dịch ẩn danh và đề xuất 3 chiến lược tăng engagement. Nộp notebook và slide.',
-    skills: ['Python', 'Pandas', 'Data Visualization', 'Statistics'],
-    timeLeft: '5 ngày', participants: 203, spotsLeft: 0,
-    status: 'active', reward: 'Học bổng internship 3 tháng', difficulty: 'Khó',
-    points: 800, joined: false, hot: true,
-  },
-  {
-    id: 4, company: 'VNG Corporation', logo: 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=80&h=80&fit=crop',
-    title: 'Game Dev: Xây dựng mini-game bằng Unity',
-    description: 'Tạo một mini-game nhập vai đơn giản trong 72h sử dụng Unity 2D.',
-    skills: ['Unity', 'C#', 'Game Design'],
-    timeLeft: 'Bắt đầu sau 2 ngày', participants: 0, spotsLeft: 30,
-    status: 'upcoming', reward: 'Gặp gỡ Game Director VNG + 5 triệu', difficulty: 'Khó',
-    points: 1000, joined: false, hot: false,
-  },
-  {
-    id: 5, company: 'Tiki', logo: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=80&h=80&fit=crop',
-    title: 'Hackathon: Ý tưởng tính năng mới cho Tiki',
-    description: 'Đề xuất và prototype 1 tính năng mới giúp tăng trải nghiệm mua sắm. Đội 2-3 người.',
-    skills: ['Product Thinking', 'UI/UX', 'Presentation'],
-    timeLeft: 'Kết thúc', participants: 310, spotsLeft: 0,
-    status: 'finished', reward: '10 triệu VNĐ (Đội thắng)', difficulty: 'Trung bình',
-    points: 600, joined: true, hot: false,
-  },
-];
 
 const difficultyColor = { 'Dễ': 'text-emerald-600 bg-emerald-50', 'Trung bình': 'text-amber-600 bg-amber-50', 'Khó': 'text-red-600 bg-red-50' };
 const statusLabel = { active: 'Đang diễn ra', upcoming: 'Sắp diễn ra', finished: 'Đã kết thúc' };
 const statusColor = { active: 'bg-emerald-500', upcoming: 'bg-amber-500', finished: 'bg-muted-foreground' };
 
 export default function Challenges() {
-  const [filter, setFilter] = useState('Tất cả');
-  const [selected, setSelected] = useState(challenges[0]);
-  const [joined, setJoined] = useState(challenges.filter(c => c.joined).map(c => c.id));
+  
 
   const handleJoin = (/** @type {number} */ id) => {
     if (!joined.includes(id)) setJoined(prev => [...prev, id]);
   };
-
+   const{
+    data: challenges=[],
+    isLoading: isChallengeLoading,
+   }=useQuery({queryKey:['challenge'],queryFn:feedApi.getChallenge});
+  const [filter, setFilter] = useState('Tất cả');
+  const [selected, setSelected] = useState(null);
+  const [joined, setJoined] = useState([]);
   return (
     <div className="flex gap-6">
       {/* List */}
